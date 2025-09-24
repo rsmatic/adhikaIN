@@ -1,179 +1,182 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { truncate } from "./utils/helpers";
 
 export default function Employees() {
-  const [employees, setEmployees] = useState([]);
-  const [form, setForm] = useState({ name: "", email: "", id: null });
-  const [isModalOpen, setIsModalOpen] = useState(false);
+    const [employees, setEmployees] = useState([]);
+    const [filteredEmployees, setFilteredEmployees] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [search, setSearch] = useState("");
+    const perPage = 15;
+    const navigate = useNavigate();
 
-  // Fetch employees from API
-  useEffect(() => {
-    fetchEmployees();
-  }, []);
+    const handleFilter = useCallback(
+        (term) => {
+            if (!term) {
+                setFilteredEmployees(employees);
+            } else {
+                const lowerTerm = term.toLowerCase();
+                const filtered = employees.filter(
+                    (emp) =>
+                        emp.firstname.toLowerCase().includes(lowerTerm) ||
+                        emp.lastname.toLowerCase().includes(lowerTerm) ||
+                        (emp.refno && emp.refno.toLowerCase().includes(lowerTerm)) ||
+                        (emp.classification && emp.classification.toLowerCase().includes(lowerTerm))
+                );
+                setFilteredEmployees(filtered);
+                setCurrentPage(1);
+            }
+        }, [employees]);
 
-  const fetchEmployees = async () => {
-    try {
-      const res = await fetch(`${process.env.REACT_APP_API_URL}/employees`);
-      const data = await res.json();
-      setEmployees(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    useEffect(() => {
+        fetchEmployees();
+    }, []);
 
-  // Open modal for Add
-  const openAddModal = () => {
-    setForm({ name: "", email: "", id: null });
-    setIsModalOpen(true);
-  };
+    useEffect(() => {
+        handleFilter(search);
+    }, [employees, search, handleFilter]);
 
-  // Open modal for Edit
-  const openEditModal = (employee) => {
-    setForm(employee);
-    setIsModalOpen(true);
-  };
+    const fetchEmployees = async () => {
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/employees`);
+            let data = await res.json();
+            if (typeof data === "string") data = JSON.parse(data);
+            setEmployees(data);
+        } catch (err) {
+            console.error("Error fetching employees:", err);
+        }
+    };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this employee?")) return;
-    try {
-      await fetch(`${process.env.REACT_APP_API_URL}/employees/${id}`, {
-        method: "DELETE",
-      });
-      setEmployees(employees.filter((emp) => emp.id !== id));
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    const handleDelete = async (id) => {
+        if (!window.confirm("Are you sure you want to delete this employee?")) return;
+        try {
+            await fetch(`${process.env.REACT_APP_API_URL}/employees/${id}`, { method: "DELETE" });
+            setEmployees(employees.filter((emp) => emp.id !== id));
+        } catch (err) {
+            console.error("Delete error:", err);
+        }
+    };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      if (form.id) {
-        // Edit
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/employees/${form.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: form.name, email: form.email }),
-        });
-        const updated = await res.json();
-        setEmployees(employees.map((emp) => (emp.id === form.id ? updated : emp)));
-      } else {
-        // Add
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/employees`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name: form.name, email: form.email }),
-        });
-        const newEmp = await res.json();
-        setEmployees([...employees, newEmp]);
-      }
-      setIsModalOpen(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    const handleEdit = (emp) => {
+        navigate(`/employees/${emp.id}`, { state: { employee: emp } });
+    };
 
-  return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-semibold">Employees</h2>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-          onClick={openAddModal}
-        >
-          Add Employee
-        </button>
-      </div>
+    // Pagination
+    const totalPages = Math.ceil(filteredEmployees.length / perPage);
+    const paginatedEmployees = filteredEmployees.slice(
+        (currentPage - 1) * perPage,
+        currentPage * perPage
+    );
+    const goToPage = (page) => {
+        if (page < 1) page = 1;
+        if (page > totalPages) page = totalPages;
+        setCurrentPage(page);
+    };
 
-      <div className="overflow-x-auto bg-white shadow rounded">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Email
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {employees.map((emp) => (
-              <tr key={emp.id}>
-                <td className="px-6 py-4">{emp.name}</td>
-                <td className="px-6 py-4">{emp.email}</td>
-                <td className="px-6 py-4 space-x-2">
-                  <button
-                    className="text-blue-600 hover:underline"
-                    onClick={() => openEditModal(emp)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="text-red-600 hover:underline"
-                    onClick={() => handleDelete(emp.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-            {employees.length === 0 && (
-              <tr>
-                <td colSpan="3" className="px-6 py-4 text-center text-gray-500">
-                  No employees found.
-                </td>
-              </tr>
+    return (
+        <div className="p-6">
+            {/* Header */}
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Employees</h2>
+                <div className="flex space-x-2">
+                    <input
+                        type="text"
+                        placeholder="Search by name, RefNo, or classification..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                        Add Employee
+                    </button>
+                </div>
+            </div>
+
+            {/* Table */}
+            <div className="overflow-x-auto bg-white shadow rounded">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">RefNo</th>
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Employment Status</th>
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Service</th>
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Birth Place</th>
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Birth Date</th>
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Civil Status</th>
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Gender</th>
+                            <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Religion</th>
+                            <th className="px-4 py-2 text-center text-xs font-medium text-gray-500 uppercase">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                        {paginatedEmployees.length > 0 ? (
+                            paginatedEmployees.map((emp) => (
+                                <tr key={emp.id} className="hover:bg-gray-50">
+                                    <td className="px-4 py-2 text-blue-600 hover:underline">{emp.refno}</td>
+                                    <td className="px-4 py-2">{emp.employmentstatus || "Active"}</td>
+                                    <td className="px-4 py-2">{emp.classification || "-"}</td>
+                                    <td className="px-4 py-2" title={`${emp.firstname} ${emp.lastname}`}>{truncate(emp.firstname + " " + emp.lastname)}</td>
+                                    <td className="px-4 py-2">{emp.birthplace || "-"}</td>
+                                    <td className="px-4 py-2">{emp.birthdate || "-"}</td>
+                                    <td className="px-4 py-2">{emp.civilstatus || "-"}</td>
+                                    <td className="px-4 py-2">{emp.gender || "-"}</td>
+                                    <td className="px-4 py-2">{emp.religion || "-"}</td>
+                                    <td className="px-4 py-2 text-center space-x-2">
+                                        <button
+                                            onClick={() => handleEdit(emp)}
+                                            className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600"
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(emp.id)}
+                                            className="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600"
+                                        >
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="10" className="px-4 py-4 text-center text-gray-500">
+                                    No employees found.
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+                <div className="flex justify-center mt-4 space-x-2">
+                    <button
+                        onClick={() => goToPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className="px-3 py-1 border rounded disabled:opacity-50"
+                    >
+                        Prev
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => (
+                        <button
+                            key={i}
+                            onClick={() => goToPage(i + 1)}
+                            className={`px-3 py-1 border rounded ${currentPage === i + 1 ? "bg-blue-500 text-white" : ""}`}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+                    <button
+                        onClick={() => goToPage(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className="px-3 py-1 border rounded disabled:opacity-50"
+                    >
+                        Next
+                    </button>
+                </div>
             )}
-          </tbody>
-        </table>
-      </div>
-
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-50">
-          <div className="bg-white p-6 rounded shadow w-full max-w-md">
-            <h3 className="text-lg font-semibold mb-4">
-              {form.id ? "Edit Employee" : "Add Employee"}
-            </h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
-                placeholder="Name"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full p-3 border rounded"
-                required
-              />
-              <input
-                type="email"
-                placeholder="Email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="w-full p-3 border rounded"
-                required
-              />
-              <div className="flex justify-end space-x-2">
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded border"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition-colors"
-                >
-                  {form.id ? "Update" : "Add"}
-                </button>
-              </div>
-            </form>
-          </div>
         </div>
-      )}
-    </div>
-  );
+    );
 }
