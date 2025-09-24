@@ -1,95 +1,78 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
-function Login() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [message, setMessage] = useState("");
+export default function Login() {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [message, setMessage] = useState("");
+    const [invalidPassword, setInvalidPassword] = useState(false);
+    const passwordRef = useRef(null);
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+    const navigate = useNavigate();
 
-    try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          username,
-          password,
-        }),
-      });
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setInvalidPassword(false);
 
-      const data = await response.json();
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password }),
+            });
 
-      if (data.success) {
-        setMessage("✅ Login successful!");
-      } else {
-        setMessage("❌ Invalid username or password");
-      }
-    } catch (err) {
-      console.error(err);
-      setMessage("⚠️ Server error");
-    }
-  };
+            const data = await response.json();
 
-  return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600">
-      <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl">
-        <h2 className="text-3xl font-bold text-center text-gray-800">Sign In</h2>
-        <p className="mt-2 text-sm text-center text-gray-500">
-          Welcome back! Please login to your account.
-        </p>
+            if (data.success) {
+                localStorage.setItem("loggedIn", true);
+                localStorage.setItem("userName", data.name);
+                setMessage("✅ Login successful!");
+                navigate("/dashboard");
+            } else {
+                setMessage("❌ Invalid username or password");
+                setInvalidPassword(true);
+                if (passwordRef.current) {
+                    passwordRef.current.focus();
+                    passwordRef.current.select(); // selects the current value
+                }
+            }
+        } catch (err) {
+            console.error(err);
+            setMessage("⚠️ Server error");
+        }
+    };
 
-        <form className="mt-6 space-y-5" onSubmit={handleLogin}>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Username</label>
-            <input
-              type="text"
-              className="w-full px-4 py-2 mt-2 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-              placeholder="Enter your username"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 mt-2 text-gray-700 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Enter your password"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full py-3 text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition duration-200 font-semibold"
-          >
-            Login
-          </button>
-        </form>
-
-        {message && (
-          <div className="p-3 mt-4 text-sm text-center rounded-lg bg-gray-100 text-gray-700 border">
-            {message}
-          </div>
-        )}
-
-        <p className="mt-6 text-sm text-center text-gray-500">
-          Don’t have an account?{" "}
-          <Link to="/signup" className="font-medium text-indigo-600 hover:underline">
-  Sign up
-</Link>
-        </p>
-      </div>
-    </div>
-  );
+    return (
+        <div className="flex items-center justify-center h-screen bg-gray-100">
+            <form
+                onSubmit={handleLogin}
+                className="bg-white p-8 rounded shadow-md w-full max-w-md"
+            >
+                <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+                {message && <p className="mb-4">{message}</p>}
+                <input
+                    type="text"
+                    placeholder="Username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="w-full p-3 mb-4 border rounded"
+                />
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    ref={passwordRef}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className={`w-full p-3 mb-4 border rounded focus:outline-none transition-colors
+    ${invalidPassword ? "border-red-500 bg-red-50" : "border-gray-300"}`}
+                />
+                <button
+                    type="submit"
+                    className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition-colors"
+                >
+                    Login
+                </button>
+            </form>
+        </div>
+    );
 }
-
-export default Login;
