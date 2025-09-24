@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Routes, Route } from "react-router-dom";
 import Employees from "./Employees";
+import EmployeeEdit from "./pages/EmployeeEdit";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -26,7 +27,26 @@ export default function Dashboard() {
               className={`w-full text-left px-6 py-3 hover:bg-blue-100 transition-colors ${
                 activeMenu === item ? "bg-blue-200 font-semibold" : ""
               }`}
-              onClick={() => setActiveMenu(item)}
+              onClick={() => {
+                setActiveMenu(item);
+                // Navigate to route
+                switch (item) {
+                  case "Dashboard":
+                    navigate("/dashboard");
+                    break;
+                  case "Employees":
+                    navigate("/dashboard/employees");
+                    break;
+                  case "Students":
+                    navigate("/dashboard/students");
+                    break;
+                  case "Evaluation":
+                    navigate("/dashboard/evaluation");
+                    break;
+                  default:
+                    navigate("/dashboard");
+                }
+              }}
             >
               {item}
             </button>
@@ -50,25 +70,28 @@ export default function Dashboard() {
 
         {/* Content area */}
         <main className="flex-1 p-6 overflow-auto">
-          {activeMenu === "Dashboard" && (
-            <div>
-              <h2 className="text-lg font-medium mb-4">Welcome to the Dashboard</h2>
-              <p>Here is a summary of your application data.</p>
-            </div>
-          )}
-          {activeMenu === "Employees" && <Employees />}
-          {activeMenu === "Students" && (
-            <div>
-              <h2 className="text-lg font-medium mb-4">Students</h2>
-              <p>View and update student information.</p>
-            </div>
-          )}
-          {activeMenu === "Evaluation" && (
-            <div>
-              <h2 className="text-lg font-medium mb-4">Evaluation</h2>
-              <p>Check evaluations and reports.</p>
-            </div>
-          )}
+          <Routes>
+            <Route path="/" element={
+              <div>
+                <h2 className="text-lg font-medium mb-4">Welcome to the Dashboard</h2>
+                <p>Here is a summary of your application data.</p>
+              </div>
+            } />
+            <Route path="employees" element={<Employees />} />
+            <Route path="employees/:id" element={<EmployeeEdit />} />
+            <Route path="students" element={
+              <div>
+                <h2 className="text-lg font-medium mb-4">Students</h2>
+                <p>View and update student information.</p>
+              </div>
+            } />
+            <Route path="evaluation" element={
+              <div>
+                <h2 className="text-lg font-medium mb-4">Evaluation</h2>
+                <p>Check evaluations and reports.</p>
+              </div>
+            } />
+          </Routes>
         </main>
       </div>
     </div>
