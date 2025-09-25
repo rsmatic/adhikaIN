@@ -1,5 +1,13 @@
 import { truncate } from "../utils/helpers";
 
+function formatDate(dateStr) {
+    if (!dateStr) return "-";
+    const date = new Date(dateStr);
+    if (isNaN(date)) return dateStr;
+    const options = { year: 'numeric', month: 'short', day: '2-digit' };
+    return date.toLocaleDateString('en-US', options);
+}
+
 export default function EmployeeTable({ employees, onView, onEdit, onDelete, hasEditAccess = false, formAccess }) {
     return (
         <div className="overflow-x-auto bg-white shadow rounded">
@@ -29,7 +37,7 @@ export default function EmployeeTable({ employees, onView, onEdit, onDelete, has
                                     {truncate(emp.firstname + " " + emp.lastname)}
                                 </td>
                                 <td className="px-4 py-2">{emp.birthplace || "-"}</td>
-                                <td className="px-4 py-2">{emp.birthdate || "-"}</td>
+                                <td className="px-4 py-2">{formatDate(emp.birthdate)}</td>
                                 <td className="px-4 py-2">{emp.civilstatus || "-"}</td>
                                 <td className="px-4 py-2">{emp.gender || "-"}</td>
                                 <td className="px-4 py-2">{emp.religion || "-"}</td>

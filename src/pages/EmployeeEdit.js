@@ -6,8 +6,7 @@ export default function EmployeeEdit() {
     const navigate = useNavigate();
     const emp = state?.employee;
     const formAccess = state?.formAccess;
-console.log(emp)
-    // Main Employee Data
+
     const [formData, setFormData] = useState({
         refno: emp?.refno || "",
         service: emp?.classification || "",
@@ -25,18 +24,18 @@ console.log(emp)
         middlename: emp?.middlename || "",
         suffix: emp?.suffix || "",
         // Multiple Data Sections
-        address: emp?.address ? JSON.parse(emp.address) : [
-            { type: "", street: "", city: "", state: "", province: "", zipcode: "" },
+        addresses: emp?.address ? JSON.parse(emp.address) : [
+            { type: "", street: "", city: "", province: "", zipcode: "" },
         ],
-        contacts: emp?.contacts || [{ type: "", number: "", person: "" }],
-        emails: emp?.emails || [{ type: "", email: "", primary: false }],
-        identifications: emp?.identifications || [
+        contacts: emp?.contact ? JSON.parse(emp.contact) : [{ type: "", number: "", person: "" }],
+        emails: emp?.email ? JSON.parse(emp.email) : [{ type: "", email: "", primary: false }],
+        identifications: emp?.identification ? JSON.parse(emp.identification) : [
             { type: "", number: "", expiry: "" },
         ],
-        banks: emp?.banks || [
+        banks: emp?.bank ? JSON.parse(emp.bank) : [
             { bankname: "", banktype: "", accountnumber: "", branch: "" },
         ],
-        family: emp?.family || [
+        families: emp?.family ? JSON.parse(emp.family) : [
             { relation: "", name: "", birthdate: "", occupation: "" },
         ],
     });
@@ -96,7 +95,7 @@ console.log(emp)
                     <h3 className="text-lg font-semibold mb-4 text-gray-700 border-b pb-2">
                         Basic Information
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div className="grid grid-cols-1 lg:grid-cols-6 gap-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1">
                                 Employee Number
@@ -108,8 +107,7 @@ console.log(emp)
                                 readOnly
                             />
                         </div>
-
-                        <div>
+                        <div className="col-span-2">
                             <label className="block text-sm font-medium text-gray-600 mb-1">
                                 Service
                             </label>
@@ -128,7 +126,6 @@ console.log(emp)
                                 <option value="Other">Other</option>
                             </select>
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1">
                                 Employment Status
@@ -140,7 +137,6 @@ console.log(emp)
                                 className="w-full border rounded px-3 py-2"
                             />
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1">
                                 Birth Place
@@ -152,7 +148,6 @@ console.log(emp)
                                 className="w-full border rounded px-3 py-2"
                             />
                         </div>
-
                         <div>
                             <label className="block text-sm font-medium text-gray-600 mb-1">
                                 Birth Date
@@ -161,54 +156,6 @@ console.log(emp)
                                 type="date"
                                 name="birthdate"
                                 value={formData.birthdate}
-                                onChange={handleChange}
-                                className="w-full border rounded px-3 py-2"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-600 mb-1">
-                                Religion
-                            </label>
-                            <input
-                                name="religion"
-                                value={formData.religion}
-                                onChange={handleChange}
-                                className="w-full border rounded px-3 py-2"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-600 mb-1">
-                                Gender
-                            </label>
-                            <input
-                                name="gender"
-                                value={formData.gender}
-                                onChange={handleChange}
-                                className="w-full border rounded px-3 py-2"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-600 mb-1">
-                                Civil Status
-                            </label>
-                            <input
-                                name="civilstatus"
-                                value={formData.civilstatus}
-                                onChange={handleChange}
-                                className="w-full border rounded px-3 py-2"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-600 mb-1">
-                                Height (cm)
-                            </label>
-                            <input
-                                name="height"
-                                value={formData.height}
                                 onChange={handleChange}
                                 className="w-full border rounded px-3 py-2"
                             />
@@ -279,31 +226,86 @@ console.log(emp)
                                 className="w-full border rounded px-3 py-2"
                             />
                         </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-600 mb-1">
+                                Gender
+                            </label>
+                            <select
+                                name="gender"
+                                value={formData.gender}
+                                onChange={handleChange}
+                                className="w-full border rounded px-3 py-2"
+                            >
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div className="col-span-2">
+                            <label className="block text-sm font-medium text-gray-600 mb-1">
+                                Religion
+                            </label>
+                            <input
+                                name="religion"
+                                value={formData.religion}
+                                onChange={handleChange}
+                                className="w-full border rounded px-3 py-2"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-600 mb-1">
+                                Civil Status
+                            </label>
+                            <input
+                                name="civilstatus"
+                                value={formData.civilstatus}
+                                onChange={handleChange}
+                                className="w-full border rounded px-3 py-2"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-600 mb-1">
+                                Height (cm)
+                            </label>
+                            <input
+                                name="height"
+                                value={formData.height}
+                                onChange={handleChange}
+                                className="w-full border rounded px-3 py-2"
+                            />
+                        </div>
                     </div>
                 </section>
 
-                {/* Dynamic Sections Example - address */}
+                {/* Dynamic Sections Example - addresses */}
                 <section>
                     <h3 className="text-lg font-semibold mb-4 text-gray-700">
                         Address Information
                     </h3>
-                    {formData.address.map((addr, i) => (
+                    {formData.addresses.map((addr, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-3 border p-3 rounded"
+                            className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-3 border p-3 rounded"
                         >
-                            <input
+                            <select
                                 value={addr.type}
                                 onChange={(e) =>
-                                    handleArrayChange("address", i, "type", e.target.value)
+                                    handleArrayChange("addresses", i, "type", e.target.value)
                                 }
-                                placeholder="Type (Home/Work)"
                                 className="border rounded px-2 py-1"
-                            />
+                            >
+                                <option value="">-Type of Address</option>
+                                <option>Work</option>
+                                <option>Business</option>
+                                <option>Billing</option>
+                                <option>Current</option>
+                                <option>Permanent</option>
+                            </select>
                             <input
                                 value={addr.street}
                                 onChange={(e) =>
-                                    handleArrayChange("address", i, "street", e.target.value)
+                                    handleArrayChange("addresses", i, "street", e.target.value)
                                 }
                                 placeholder="Street"
                                 className="border rounded px-2 py-1"
@@ -311,15 +313,15 @@ console.log(emp)
                             <input
                                 value={addr.city}
                                 onChange={(e) =>
-                                    handleArrayChange("address", i, "city", e.target.value)
+                                    handleArrayChange("addresses", i, "city", e.target.value)
                                 }
                                 placeholder="City/Municipality"
                                 className="border rounded px-2 py-1"
                             />
                             <input
-                                value={addr.state}
+                                value={addr.province}
                                 onChange={(e) =>
-                                    handleArrayChange("address", i, "state", e.target.value)
+                                    handleArrayChange("addresses", i, "state", e.target.value)
                                 }
                                 placeholder="State/Province"
                                 className="border rounded px-2 py-1"
@@ -327,59 +329,413 @@ console.log(emp)
                             <input
                                 value={addr.zipcode}
                                 onChange={(e) =>
-                                    handleArrayChange("address", i, "zipcode", e.target.value)
+                                    handleArrayChange("addresses", i, "zipcode", e.target.value)
                                 }
                                 placeholder="Zip Code"
                                 className="border rounded px-2 py-1"
                             />
-                            { formAccess?.canEdit ?
-                            (<button
-                                type="button"
-                                onClick={() => removeArrayItem("address", i)}
-                                className="col-span-full text-red-500 text-sm"
-                            >
-                                Remove
-                            </button>) : '' }
+                            {formAccess?.canEdit ?
+                                (<button
+                                    type="button"
+                                    onClick={() => removeArrayItem("addresses", i)}
+                                    className="border rounded text-red-500 text-sm"
+                                >
+                                    Remove
+                                </button>) : ''}
                         </div>
                     ))}
-                    { formAccess?.canEdit ?
-                    (<button
-                        type="button"
-                        onClick={() =>
-                            addArrayItem("address", {
-                                type: "",
-                                street: "",
-                                city: "",
-                                state: "",
-                                zipcode: "",
-                            })
-                        }
-                        className="text-blue-600 text-sm"
-                    >
-                        + Add Address
-                    </button>)
-                    : '' }
+                    {formAccess?.canEdit ?
+                        (<button
+                            type="button"
+                            onClick={() =>
+                                addArrayItem("addresses", {
+                                    type: "",
+                                    street: "",
+                                    city: "",
+                                    state: "",
+                                    zipcode: "",
+                                })
+                            }
+                            className="text-blue-600 text-sm"
+                        >
+                            + Add Address
+                        </button>)
+                        : ''}
                 </section>
 
-                {/* Repeat similar sections for Contacts, Emails, IDs, Banks, Family */}
+                <section>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-700">
+                        Contact Information
+                    </h3>
+                    {formData.contacts.map((contact, i) => (
+                        <div
+                            key={i}
+                            className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3 border p-3 rounded"
+                        >
+                            <select
+                                value={contact.type}
+                                onChange={(e) =>
+                                    handleArrayChange("contacts", i, "type", e.target.value)
+                                }
+                                className="border rounded px-2 py-1"
+                            >
+                                <option value="">-Type of Contact</option>
+                                <option>Personal</option>
+                                <option>Work</option>
+                                <option>Business</option>
+                                <option>In Case of Emergency</option>
+                            </select>
+                            <input
+                                value={contact.street}
+                                onChange={(e) =>
+                                    handleArrayChange("contacts", i, "number", e.target.value)
+                                }
+                                placeholder="Contact Number"
+                                className="border rounded px-2 py-1"
+                            />
+                            <input
+                                value={contact.person}
+                                onChange={(e) =>
+                                    handleArrayChange("contacts", i, "person", e.target.value)
+                                }
+                                placeholder="Contact Person"
+                                className="border rounded px-2 py-1"
+                            />
+                            {formAccess?.canEdit ?
+                                (<button
+                                    type="button"
+                                    onClick={() => removeArrayItem("contacts", i)}
+                                    className="border rounded text-red-500 text-sm"
+                                >
+                                    Remove
+                                </button>) : ''}
+                        </div>
+                    ))}
+                    {formAccess?.canEdit ?
+                        (<button
+                            type="button"
+                            onClick={() =>
+                                addArrayItem("contacts", {
+                                    type: "",
+                                    street: "",
+                                    city: "",
+                                    state: "",
+                                    zipcode: "",
+                                })
+                            }
+                            className="text-blue-600 text-sm"
+                        >
+                            + Add Contact
+                        </button>)
+                        : ''}
+                </section>
 
-                { formAccess?.canEdit ?
-                (<div className="flex justify-end space-x-3">
-                    <button
-                        type="button"
-                        onClick={() => navigate("/dashboard/employees")}
-                        className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
-                    >
-                        Cancel
-                    </button>
-                    <button
-                        type="submit"
-                        className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    >
-                        Save Changes
-                    </button>
-                </div>)
-                : ''} 
+                <section>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-700">
+                        Email Information
+                    </h3>
+                    {formData.emails.map((email, i) => (
+                        <div
+                            key={i}
+                            className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3 border p-3 rounded"
+                        >
+                            <select
+                                value={email.type}
+                                onChange={(e) =>
+                                    handleArrayChange("emails", i, "type", e.target.value)
+                                }
+                                className="border rounded px-2 py-1"
+                            >
+                                <option value="">-Type of Email</option>
+                                <option>Personal</option>
+                                <option>Work</option>
+                                <option>Business</option>
+                                <option>In Case of Emergency</option>
+                            </select>
+                            <input
+                                value={email.email}
+                                onChange={(e) =>
+                                    handleArrayChange("emails", i, "number", e.target.value)
+                                }
+                                placeholder="email Number"
+                                className="border rounded px-2 py-1"
+                            />
+                            <label title="Primary" className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    checked={!!email.primary}
+                                    onChange={e =>
+                                        handleArrayChange("emails", i, "primary", e.target.checked)
+                                    }
+                                    className="border rounded"
+                                    disabled={!formAccess?.canEdit}
+                                />
+
+                            </label>
+                            {formAccess?.canEdit ?
+                                (<button
+                                    type="button"
+                                    onClick={() => removeArrayItem("emails", i)}
+                                    className="border rounded text-red-500 text-sm"
+                                >
+                                    Remove
+                                </button>) : ''}
+                        </div>
+                    ))}
+                    {formAccess?.canEdit ?
+                        (<button
+                            type="button"
+                            onClick={() =>
+                                addArrayItem("emails", {
+                                    type: "",
+                                    street: "",
+                                    city: "",
+                                    state: "",
+                                    zipcode: "",
+                                })
+                            }
+                            className="text-blue-600 text-sm"
+                        >
+                            + Add Email
+                        </button>)
+                        : ''}
+                </section>
+
+                <section>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-700">
+                        Identification Card Information
+                    </h3>
+                    {formData.identifications.map((idc, i) => (
+                        <div
+                            key={i}
+                            className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3 border p-3 rounded"
+                        >
+                            <select
+                                value={idc.type}
+                                onChange={(e) =>
+                                    handleArrayChange("identifications", i, "type", e.target.value)
+                                }
+                                className="border rounded px-2 py-1"
+                            >
+                                <option value="">-Type of ID</option>
+                                <option>Driver's License</option>
+                                <option>Pagibig-HDMF</option>
+                                <option>SSS-UMID</option>
+                                <option>Philhealth</option>
+                                <option>Postal</option>
+                                <option>TIN</option>
+                                <option>Voters</option>
+                            </select>
+                            <input
+                                value={idc.number}
+                                onChange={(e) =>
+                                    handleArrayChange("identifications", i, "number", e.target.value)
+                                }
+                                placeholder="Number"
+                                className="border rounded px-2 py-1"
+                            />
+                            <input
+                                value={idc.expiry}
+                                onChange={(e) =>
+                                    handleArrayChange("identifications", i, "expiry", e.target.value)
+                                }
+                                placeholder="Expiration"
+                                className="border rounded px-2 py-1"
+                            />
+                            {formAccess?.canEdit ?
+                                (<button
+                                    type="button"
+                                    onClick={() => removeArrayItem("identifications", i)}
+                                    className="border rounded text-red-500 text-sm"
+                                >
+                                    Remove
+                                </button>) : ''}
+                        </div>
+                    ))}
+                    {formAccess?.canEdit ?
+                        (<button
+                            type="button"
+                            onClick={() =>
+                                addArrayItem("identifications", {
+                                    type: "",
+                                    number: "",
+                                    expiry: "",
+                                })
+                            }
+                            className="text-blue-600 text-sm"
+                        >
+                            + Add ID
+                        </button>)
+                        : ''}
+                </section>
+
+                <section>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-700">
+                        Bank Information
+                    </h3>
+                    {formData.banks.map((bank, i) => (
+                        <div
+                            key={i}
+                            className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3 border p-3 rounded"
+                        >
+                            <select
+                                value={bank.type}
+                                onChange={(e) =>
+                                    handleArrayChange("banks", i, "type", e.target.value)
+                                }
+                                className="border rounded px-2 py-1"
+                            >
+                                <option value="">-Bank name</option>
+                                <option>BDO</option>
+                                <option>SB</option>
+                                <option>UCPB</option>
+                                <option>UB</option>
+                                <option>BPI</option>
+                                <option>AUB</option>
+                                <option>Chinabank</option>
+                                <option>Chinatrust</option>
+                                <option>Land Bank</option>
+                                <option>Maybank</option>
+                                <option>Metrobank</option>
+                                <option>GXI</option>
+                            </select>
+                            <input
+                                value={bank.number}
+                                onChange={(e) =>
+                                    handleArrayChange("banks", i, "number", e.target.value)
+                                }
+                                placeholder="Number"
+                                className="border rounded px-2 py-1"
+                            />
+                            <input
+                                value={bank.expiry}
+                                onChange={(e) =>
+                                    handleArrayChange("banks", i, "expiry", e.target.value)
+                                }
+                                placeholder="Expiration"
+                                className="border rounded px-2 py-1"
+                            />
+                            {formAccess?.canEdit ?
+                                (<button
+                                    type="button"
+                                    onClick={() => removeArrayItem("banks", i)}
+                                    className="border rounded text-red-500 text-sm"
+                                >
+                                    Remove
+                                </button>) : ''}
+                        </div>
+                    ))}
+                    {formAccess?.canEdit ?
+                        (<button
+                            type="button"
+                            onClick={() =>
+                                addArrayItem("banks", {
+                                    type: "",
+                                    number: "",
+                                    expiry: "",
+                                })
+                            }
+                            className="text-blue-600 text-sm"
+                        >
+                            + Add ID
+                        </button>)
+                        : ''}
+                </section>
+
+                <section>
+                    <h3 className="text-lg font-semibold mb-4 text-gray-700">
+                        Family Information
+                    </h3>
+                    {formData.families.map((family, i) => (
+                        <div
+                            key={i}
+                            className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-3 border p-3 rounded"
+                        >
+                            <select
+                                value={family.relation}
+                                onChange={(e) =>
+                                    handleArrayChange("families", i, "relation", e.target.value)
+                                }
+                                className="border rounded px-2 py-1"
+                            >
+                                
+                                <option value="">-Relation</option>
+                                <option>Father</option>
+                                <option>Mother</option>
+                                <option>Sibling</option>
+                                <option>Guardian</option>
+                                <option>Spouse</option>
+                                <option>Children</option>
+                            </select>
+                            <input
+                                value={family.name}
+                                onChange={(e) =>
+                                    handleArrayChange("families", i, "name", e.target.value)
+                                }
+                                placeholder="Name"
+                                className="border rounded px-2 py-1"
+                            />
+                            <input
+                                value={family.birthdate}
+                                onChange={(e) =>
+                                    handleArrayChange("families", i, "birthdate", e.target.value)
+                                }
+                                placeholder="Birthdate"
+                                className="border rounded px-2 py-1"
+                            />
+                            <input
+                                value={family.occupation}
+                                onChange={(e) =>
+                                    handleArrayChange("families", i, "occupation", e.target.value)
+                                }
+                                placeholder="Occupation"
+                                className="border rounded px-2 py-1"
+                            />
+                            {formAccess?.canEdit ?
+                                (<button
+                                    type="button"
+                                    onClick={() => removeArrayItem("families", i)}
+                                    className="border rounded text-red-500 text-sm"
+                                >
+                                    Remove
+                                </button>) : ''}
+                        </div>
+                    ))}
+                    {formAccess?.canEdit ?
+                        (<button
+                            type="button"
+                            onClick={() =>
+                                addArrayItem("families", {
+                                    relation: "",
+                                    name: "",
+                                    birthdate: "",
+                                    occupation: "",
+                                })
+                            }
+                            className="text-blue-600 text-sm"
+                        >
+                            + Add Family
+                        </button>)
+                        : ''}
+                </section>
+
+                {formAccess?.canEdit ?
+                    (<div className="flex justify-end space-x-3">
+                        <button
+                            type="button"
+                            onClick={() => navigate("/dashboard/employees")}
+                            className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        >
+                            Save Changes
+                        </button>
+                    </div>)
+                    : ''}
             </form>
         </div>
     );
