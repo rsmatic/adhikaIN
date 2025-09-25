@@ -26,6 +26,7 @@ export default function Login() {
             if (data.success) {
                 localStorage.setItem("loggedIn", true);
                 localStorage.setItem("userName", data.name);
+                localStorage.setItem("role", data.role);
                 setMessage("✅ Login successful!");
                 navigate("/dashboard");
             } else {

@@ -6,7 +6,6 @@ import EmployeeEdit from "./pages/EmployeeEdit";
 export default function Dashboard() {
   const navigate = useNavigate();
   const [activeMenu, setActiveMenu] = useState("Dashboard");
-
   const menuItems = ["Dashboard", "Employees", "Students", "Evaluation"];
 
   const handleLogout = () => {
@@ -43,8 +42,8 @@ export default function Dashboard() {
                   case "Evaluation":
                     navigate("/dashboard/evaluation");
                     break;
-                  default:
-                    navigate("/dashboard");
+                  default: 
+
                 }
               }}
             >
@@ -77,7 +76,7 @@ export default function Dashboard() {
                 <p>Here is a summary of your application data.</p>
               </div>
             } />
-            <Route path="employees" element={<Employees />} />
+              <Route path="employees" element={<Employees access={localStorage.getItem("role")} />} />
             <Route path="employees/:id" element={<EmployeeEdit />} />
             <Route path="students" element={
               <div>

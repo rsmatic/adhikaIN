@@ -1,6 +1,6 @@
 import { truncate } from "../utils/helpers";
 
-export default function EmployeeTable({ employees, onEdit, onDelete }) {
+export default function EmployeeTable({ employees, onView, onEdit, onDelete, hasEditAccess = false, formAccess }) {
     return (
         <div className="overflow-x-auto bg-white shadow rounded">
             <table className="min-w-full divide-y divide-gray-200">
@@ -34,12 +34,25 @@ export default function EmployeeTable({ employees, onEdit, onDelete }) {
                                 <td className="px-4 py-2">{emp.gender || "-"}</td>
                                 <td className="px-4 py-2">{emp.religion || "-"}</td>
                                 <td className="px-4 py-2 text-center space-x-2">
-                                    <button onClick={() => onEdit(emp)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">
-                                        Edit
-                                    </button>
-                                    <button onClick={() => onDelete(emp.id)} className="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600">
-                                        Delete
-                                    </button>
+                                    { formAccess?.canEdit ? (
+                                        <button onClick={() => onEdit(emp)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">
+                                            Edit
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => onView(emp)} className="px-2 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">
+                                            View
+                                        </button>
+                                    )} {
+                                        formAccess && formAccess?.canDelete ?
+                                        (<button
+                                            onClick={() => onDelete(emp.id)}
+                                            className={`px-2 py-1 text-xs rounded bg-red-500 text-white hover:bg-red-600`}
+                                        >
+                                            Delete
+                                        </button>) :
+                                        ''
+                                    }
+                                        
                                 </td>
                             </tr>
                         ))

@@ -1,11 +1,21 @@
-// Employees.js
 import { useNavigate } from "react-router-dom";
 import { useEmployees } from "./hooks/useEmployees";
 import EmployeeTable from "./components/EmployeeTable";
 import Pagination from "./components/Pagination";
+import { useEffect, useState } from "react";
+import { useUserRolePermission } from "./hooks/useUserRolePermission";
 
-export default function Employees() {
+export default function Employees({ access }) {
     const navigate = useNavigate();
+    const { role, setRole, getModulePermission } = useUserRolePermission();
+    const [ formAccess, setFormAccess ] = useState(getModulePermission("Employee"))
+
+    useEffect(() => {
+        setRole(access);
+        const permission = getModulePermission("Employee");
+        setFormAccess(permission);
+    }, [role, access, getModulePermission, setRole]);
+
     const {
         employees,
         totalPages,
@@ -17,7 +27,11 @@ export default function Employees() {
     } = useEmployees();
 
     const handleEdit = (emp) => {
-        navigate(`${emp.id}`, { state: { employee: emp } });
+        navigate(`${emp.id}`, { state: { employee: emp, userRole: role, formAccess } });
+    };
+
+    const handleView = (emp) => {
+        navigate(`${emp.id}`, { state: { employee: emp, userRole: role, formAccess } });
     };
 
     return (
@@ -32,13 +46,20 @@ export default function Employees() {
                         onChange={(e) => setSearch(e.target.value)}
                         className="px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
-                    <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
-                        Add Employee
-                    </button>
+                    {formAccess?.canAdd ?
+                        (<button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">
+                            Add Employee
+                        </button>) : ''}
                 </div>
             </div>
 
-            <EmployeeTable employees={employees} onEdit={handleEdit} onDelete={handleDelete} />
+            <EmployeeTable
+                employees={employees}
+                onView={handleView}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                formAccess={formAccess}
+            />
 
             <Pagination totalPages={totalPages} currentPage={currentPage} goToPage={goToPage} />
         </div>
