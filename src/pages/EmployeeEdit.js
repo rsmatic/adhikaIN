@@ -286,14 +286,15 @@ export default function EmployeeEdit() {
                     {formData.addresses.map((addr, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-1 md:grid-cols-6 gap-3 mb-3 border p-3 rounded"
+                            className="grid grid-cols-12 gap-x-2 gap-y-2 mb-3 border p-3 rounded items-center"
                         >
                             <select
                                 value={addr.type}
                                 onChange={(e) =>
-                                    handleArrayChange("addresses", i, "type", e.target.value)
+                                    handleArrayChange('addresses', i, 'type', e.target.value)
                                 }
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-1"
+                                style={{ minWidth: 0 }}
                             >
                                 <option value="">-Type of Address</option>
                                 <option>Work</option>
@@ -305,62 +306,68 @@ export default function EmployeeEdit() {
                             <input
                                 value={addr.street}
                                 onChange={(e) =>
-                                    handleArrayChange("addresses", i, "street", e.target.value)
+                                    handleArrayChange('addresses', i, 'street', e.target.value)
                                 }
                                 placeholder="Street"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-2"
+                                style={{ minWidth: 0 }}
                             />
                             <input
                                 value={addr.city}
                                 onChange={(e) =>
-                                    handleArrayChange("addresses", i, "city", e.target.value)
+                                    handleArrayChange('addresses', i, 'city', e.target.value)
                                 }
                                 placeholder="City/Municipality"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-3"
+                                style={{ minWidth: 0 }}
                             />
                             <input
                                 value={addr.province}
                                 onChange={(e) =>
-                                    handleArrayChange("addresses", i, "state", e.target.value)
+                                    handleArrayChange('addresses', i, 'state', e.target.value)
                                 }
                                 placeholder="State/Province"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-3"
+                                style={{ minWidth: 0 }}
                             />
                             <input
                                 value={addr.zipcode}
                                 onChange={(e) =>
-                                    handleArrayChange("addresses", i, "zipcode", e.target.value)
+                                    handleArrayChange('addresses', i, 'zipcode', e.target.value)
                                 }
                                 placeholder="Zip Code"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-2"
+                                style={{ minWidth: 0 }}
                             />
-                            {formAccess?.canEdit ?
-                                (<button
+                            {formAccess?.canEdit ? (
+                                <button
                                     type="button"
-                                    onClick={() => removeArrayItem("addresses", i)}
-                                    className="border rounded text-red-500 text-sm"
+                                    onClick={() => removeArrayItem('addresses', i)}
+                                    className="border rounded text-red-500 text-xs px-2 py-1 min-w-[60px] col-span-1 justify-self-end"
+                                    style={{ minWidth: 0 }}
                                 >
                                     Remove
-                                </button>) : ''}
+                                </button>
+                            ) : ''}
                         </div>
                     ))}
-                    {formAccess?.canEdit ?
-                        (<button
+                    {formAccess?.canEdit ? (
+                        <button
                             type="button"
                             onClick={() =>
-                                addArrayItem("addresses", {
-                                    type: "",
-                                    street: "",
-                                    city: "",
-                                    state: "",
-                                    zipcode: "",
+                                addArrayItem('addresses', {
+                                    type: '',
+                                    street: '',
+                                    city: '',
+                                    state: '',
+                                    zipcode: '',
                                 })
                             }
                             className="text-blue-600 text-sm"
                         >
                             + Add Address
-                        </button>)
-                        : ''}
+                        </button>
+                    ) : ''}
                 </section>
 
                 <section>
@@ -370,14 +377,15 @@ export default function EmployeeEdit() {
                     {formData.contacts.map((contact, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3 border p-3 rounded"
+                            className="grid grid-cols-12 gap-2 mb-3 border p-3 rounded items-center"
                         >
                             <select
                                 value={contact.type}
                                 onChange={(e) =>
-                                    handleArrayChange("contacts", i, "type", e.target.value)
+                                    handleArrayChange('contacts', i, 'type', e.target.value)
                                 }
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-2"
+                                style={{ minWidth: 0 }}
                             >
                                 <option value="">-Type of Contact</option>
                                 <option>Personal</option>
@@ -386,48 +394,50 @@ export default function EmployeeEdit() {
                                 <option>In Case of Emergency</option>
                             </select>
                             <input
-                                value={contact.street}
+                                value={contact.number}
                                 onChange={(e) =>
-                                    handleArrayChange("contacts", i, "number", e.target.value)
+                                    handleArrayChange('contacts', i, 'number', e.target.value)
                                 }
                                 placeholder="Contact Number"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-5"
+                                style={{ minWidth: 0 }}
                             />
                             <input
                                 value={contact.person}
                                 onChange={(e) =>
-                                    handleArrayChange("contacts", i, "person", e.target.value)
+                                    handleArrayChange('contacts', i, 'person', e.target.value)
                                 }
                                 placeholder="Contact Person"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-4"
+                                style={{ minWidth: 0 }}
                             />
-                            {formAccess?.canEdit ?
-                                (<button
+                            {formAccess?.canEdit ? (
+                                <button
                                     type="button"
-                                    onClick={() => removeArrayItem("contacts", i)}
-                                    className="border rounded text-red-500 text-sm"
+                                    onClick={() => removeArrayItem('contacts', i)}
+                                    className="border rounded text-red-500 text-xs px-2 py-1 min-w-[60px] col-span-1 justify-self-end"
+                                    style={{ minWidth: 0 }}
                                 >
                                     Remove
-                                </button>) : ''}
+                                </button>
+                            ) : ''}
                         </div>
                     ))}
-                    {formAccess?.canEdit ?
-                        (<button
+                    {formAccess?.canEdit ? (
+                        <button
                             type="button"
                             onClick={() =>
-                                addArrayItem("contacts", {
-                                    type: "",
-                                    street: "",
-                                    city: "",
-                                    state: "",
-                                    zipcode: "",
+                                addArrayItem('contacts', {
+                                    type: '',
+                                    number: '',
+                                    person: '',
                                 })
                             }
                             className="text-blue-600 text-sm"
                         >
                             + Add Contact
-                        </button>)
-                        : ''}
+                        </button>
+                    ) : ''}
                 </section>
 
                 <section>
@@ -437,14 +447,15 @@ export default function EmployeeEdit() {
                     {formData.emails.map((email, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3 border p-3 rounded"
+                            className="grid grid-cols-12 gap-2 mb-3 border p-3 rounded items-center"
                         >
                             <select
                                 value={email.type}
                                 onChange={(e) =>
-                                    handleArrayChange("emails", i, "type", e.target.value)
+                                    handleArrayChange('emails', i, 'type', e.target.value)
                                 }
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-3"
+                                style={{ minWidth: 0 }}
                             >
                                 <option value="">-Type of Email</option>
                                 <option>Personal</option>
@@ -455,50 +466,51 @@ export default function EmployeeEdit() {
                             <input
                                 value={email.email}
                                 onChange={(e) =>
-                                    handleArrayChange("emails", i, "number", e.target.value)
+                                    handleArrayChange('emails', i, 'email', e.target.value)
                                 }
-                                placeholder="email Number"
-                                className="border rounded px-2 py-1"
+                                placeholder="Email Address"
+                                className="border rounded px-2 py-1 col-span-7"
+                                style={{ minWidth: 0 }}
                             />
-                            <label title="Primary" className="flex items-center space-x-2">
+                            <label title="Primary" className="col-span-0 p-0 m-0 flex items-center justify-center" style={{margin:0,padding:0}}>
                                 <input
                                     type="checkbox"
                                     checked={!!email.primary}
                                     onChange={e =>
-                                        handleArrayChange("emails", i, "primary", e.target.checked)
+                                        handleArrayChange('emails', i, 'primary', e.target.checked)
                                     }
-                                    className="border rounded"
+                                    className="border rounded focus:ring-2 focus:ring-blue-400 focus:outline-none block p-0 m-0"
+                                    style={{ width: '1.5rem', height: '1.5rem', minWidth: '30px', minHeight: '30px', margin: 0, padding: 0 }}
                                     disabled={!formAccess?.canEdit}
                                 />
-
                             </label>
-                            {formAccess?.canEdit ?
-                                (<button
+                            {formAccess?.canEdit ? (
+                                <button
                                     type="button"
-                                    onClick={() => removeArrayItem("emails", i)}
-                                    className="border rounded text-red-500 text-sm"
+                                    onClick={() => removeArrayItem('emails', i)}
+                                    className="border rounded text-red-500 text-xs px-2 py-1 min-w-[60px] col-span-1 justify-self-end"
+                                    style={{ minWidth: 0 }}
                                 >
                                     Remove
-                                </button>) : ''}
+                                </button>
+                            ) : ''}
                         </div>
                     ))}
-                    {formAccess?.canEdit ?
-                        (<button
+                    {formAccess?.canEdit ? (
+                        <button
                             type="button"
                             onClick={() =>
-                                addArrayItem("emails", {
-                                    type: "",
-                                    street: "",
-                                    city: "",
-                                    state: "",
-                                    zipcode: "",
+                                addArrayItem('emails', {
+                                    type: '',
+                                    email: '',
+                                    primary: false,
                                 })
                             }
                             className="text-blue-600 text-sm"
                         >
                             + Add Email
-                        </button>)
-                        : ''}
+                        </button>
+                    ) : ''}
                 </section>
 
                 <section>
@@ -508,14 +520,15 @@ export default function EmployeeEdit() {
                     {formData.identifications.map((idc, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3 border p-3 rounded"
+                            className="grid grid-cols-12 gap-2 mb-3 border p-3 rounded items-center"
                         >
                             <select
                                 value={idc.type}
                                 onChange={(e) =>
-                                    handleArrayChange("identifications", i, "type", e.target.value)
+                                    handleArrayChange('identifications', i, 'type', e.target.value)
                                 }
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-4"
+                                style={{ minWidth: 0 }}
                             >
                                 <option value="">-Type of ID</option>
                                 <option>Driver's License</option>
@@ -529,44 +542,48 @@ export default function EmployeeEdit() {
                             <input
                                 value={idc.number}
                                 onChange={(e) =>
-                                    handleArrayChange("identifications", i, "number", e.target.value)
+                                    handleArrayChange('identifications', i, 'number', e.target.value)
                                 }
                                 placeholder="Number"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-5"
+                                style={{ minWidth: 0 }}
                             />
                             <input
                                 value={idc.expiry}
                                 onChange={(e) =>
-                                    handleArrayChange("identifications", i, "expiry", e.target.value)
+                                    handleArrayChange('identifications', i, 'expiry', e.target.value)
                                 }
                                 placeholder="Expiration"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-2"
+                                style={{ minWidth: 0 }}
                             />
-                            {formAccess?.canEdit ?
-                                (<button
+                            {formAccess?.canEdit ? (
+                                <button
                                     type="button"
-                                    onClick={() => removeArrayItem("identifications", i)}
-                                    className="border rounded text-red-500 text-sm"
+                                    onClick={() => removeArrayItem('identifications', i)}
+                                    className="border rounded text-red-500 text-xs px-2 py-1 min-w-[60px] col-span-1 justify-self-end"
+                                    style={{ minWidth: 0 }}
                                 >
                                     Remove
-                                </button>) : ''}
+                                </button>
+                            ) : ''}
                         </div>
                     ))}
-                    {formAccess?.canEdit ?
-                        (<button
+                    {formAccess?.canEdit ? (
+                        <button
                             type="button"
                             onClick={() =>
-                                addArrayItem("identifications", {
-                                    type: "",
-                                    number: "",
-                                    expiry: "",
+                                addArrayItem('identifications', {
+                                    type: '',
+                                    number: '',
+                                    expiry: '',
                                 })
                             }
                             className="text-blue-600 text-sm"
                         >
                             + Add ID
-                        </button>)
-                        : ''}
+                        </button>
+                    ) : ''}
                 </section>
 
                 <section>
@@ -576,14 +593,15 @@ export default function EmployeeEdit() {
                     {formData.banks.map((bank, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-1 md:grid-cols-4 gap-3 mb-3 border p-3 rounded"
+                            className="grid grid-cols-12 gap-2 mb-3 border p-3 rounded items-center"
                         >
                             <select
                                 value={bank.type}
                                 onChange={(e) =>
-                                    handleArrayChange("banks", i, "type", e.target.value)
+                                    handleArrayChange('banks', i, 'type', e.target.value)
                                 }
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-4"
+                                style={{ minWidth: 0 }}
                             >
                                 <option value="">-Bank name</option>
                                 <option>BDO</option>
@@ -602,44 +620,48 @@ export default function EmployeeEdit() {
                             <input
                                 value={bank.number}
                                 onChange={(e) =>
-                                    handleArrayChange("banks", i, "number", e.target.value)
+                                    handleArrayChange('banks', i, 'number', e.target.value)
                                 }
                                 placeholder="Number"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-5"
+                                style={{ minWidth: 0 }}
                             />
                             <input
                                 value={bank.expiry}
                                 onChange={(e) =>
-                                    handleArrayChange("banks", i, "expiry", e.target.value)
+                                    handleArrayChange('banks', i, 'expiry', e.target.value)
                                 }
                                 placeholder="Expiration"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-2"
+                                style={{ minWidth: 0 }}
                             />
-                            {formAccess?.canEdit ?
-                                (<button
+                            {formAccess?.canEdit ? (
+                                <button
                                     type="button"
-                                    onClick={() => removeArrayItem("banks", i)}
-                                    className="border rounded text-red-500 text-sm"
+                                    onClick={() => removeArrayItem('banks', i)}
+                                    className="border rounded text-red-500 text-xs px-2 py-1 min-w-[60px] col-span-1 justify-self-end"
+                                    style={{ minWidth: 0 }}
                                 >
                                     Remove
-                                </button>) : ''}
+                                </button>
+                            ) : ''}
                         </div>
                     ))}
-                    {formAccess?.canEdit ?
-                        (<button
+                    {formAccess?.canEdit ? (
+                        <button
                             type="button"
                             onClick={() =>
-                                addArrayItem("banks", {
-                                    type: "",
-                                    number: "",
-                                    expiry: "",
+                                addArrayItem('banks', {
+                                    type: '',
+                                    number: '',
+                                    expiry: '',
                                 })
                             }
                             className="text-blue-600 text-sm"
                         >
                             + Add ID
-                        </button>)
-                        : ''}
+                        </button>
+                    ) : ''}
                 </section>
 
                 <section>
@@ -649,16 +671,16 @@ export default function EmployeeEdit() {
                     {formData.families.map((family, i) => (
                         <div
                             key={i}
-                            className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-3 border p-3 rounded"
+                            className="grid grid-cols-12 gap-2 mb-3 border p-3 rounded items-center"
                         >
                             <select
                                 value={family.relation}
                                 onChange={(e) =>
-                                    handleArrayChange("families", i, "relation", e.target.value)
+                                    handleArrayChange('families', i, 'relation', e.target.value)
                                 }
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-3"
+                                style={{ minWidth: 0 }}
                             >
-                                
                                 <option value="">-Relation</option>
                                 <option>Father</option>
                                 <option>Mother</option>
@@ -670,53 +692,58 @@ export default function EmployeeEdit() {
                             <input
                                 value={family.name}
                                 onChange={(e) =>
-                                    handleArrayChange("families", i, "name", e.target.value)
+                                    handleArrayChange('families', i, 'name', e.target.value)
                                 }
                                 placeholder="Name"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-4"
+                                style={{ minWidth: 0 }}
                             />
                             <input
                                 value={family.birthdate}
                                 onChange={(e) =>
-                                    handleArrayChange("families", i, "birthdate", e.target.value)
+                                    handleArrayChange('families', i, 'birthdate', e.target.value)
                                 }
                                 placeholder="Birthdate"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-3"
+                                style={{ minWidth: 0 }}
                             />
                             <input
                                 value={family.occupation}
                                 onChange={(e) =>
-                                    handleArrayChange("families", i, "occupation", e.target.value)
+                                    handleArrayChange('families', i, 'occupation', e.target.value)
                                 }
                                 placeholder="Occupation"
-                                className="border rounded px-2 py-1"
+                                className="border rounded px-2 py-1 col-span-1"
+                                style={{ minWidth: 0 }}
                             />
-                            {formAccess?.canEdit ?
-                                (<button
+                            {formAccess?.canEdit ? (
+                                <button
                                     type="button"
-                                    onClick={() => removeArrayItem("families", i)}
-                                    className="border rounded text-red-500 text-sm"
+                                    onClick={() => removeArrayItem('families', i)}
+                                    className="border rounded text-red-500 text-xs px-2 py-1 min-w-[60px] col-span-1 justify-self-end"
+                                    style={{ minWidth: 0 }}
                                 >
                                     Remove
-                                </button>) : ''}
+                                </button>
+                            ) : ''}
                         </div>
                     ))}
-                    {formAccess?.canEdit ?
-                        (<button
+                    {formAccess?.canEdit ? (
+                        <button
                             type="button"
                             onClick={() =>
-                                addArrayItem("families", {
-                                    relation: "",
-                                    name: "",
-                                    birthdate: "",
-                                    occupation: "",
+                                addArrayItem('families', {
+                                    relation: '',
+                                    name: '',
+                                    birthdate: '',
+                                    occupation: '',
                                 })
                             }
                             className="text-blue-600 text-sm"
                         >
                             + Add Family
-                        </button>)
-                        : ''}
+                        </button>
+                    ) : ''}
                 </section>
 
                 {formAccess?.canEdit ?
